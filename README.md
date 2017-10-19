@@ -1,0 +1,2 @@
+# MyFirstSSMProject
+test
