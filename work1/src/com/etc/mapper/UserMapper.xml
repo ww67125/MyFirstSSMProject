@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.etc.mapper.UserMapper">
+
+	<!-- 根据用户名和密码查找用户 -->
+	<select id="findUser" parameterType="User" resultType="User">
+		 select * from user where username = #{username} and password = #{password}
+	</select>
+	
+	<!-- 更新用户  -->
+	<update id="updateUser" parameterType="User">
+		update user set score = #{score} where userid = #{userid}
+	</update>
+	
+	<!-- 添加用户  -->
+	<insert id="insertUser" parameterType="User" useGeneratedKeys="true" keyProperty="userid">
+		insert into user values(null, #{username}, #{password}, #{score}, #{photo}, #{gender}, #{job}, #{interest}, #{regtime})
+	</insert>
+	
+	<!-- 查询全部用户列表  
+	<select id="findUserList" resultType="User">
+		select * from user
+	</select>
+	-->
+	
+	<!-- 按用户名模糊查询
+	<select id="findUserList" parameterType="string" resultType="User">
+		select * from user where username like "%"#{username}"%"
+	</select>
+	-->
+	
+	<!-- 按用户性别组合查询
+	<select id="findUserList" parameterType="User" resultType="User">
+	
+		select * from user 
+		
+		<where>
+		
+			<if test="username!=''">
+				and username like "%"#{username}"%" 
+			</if>
+			
+			<if test="gender!=''">
+				and gender = #{gender}
+			</if>
+				
+		</where>
+		
+	</select>
+	-->
+	
+	<!-- 按用户职业组合查询
+	<select id="findUserList" parameterType="User" resultType="User">
+	
+		select * from user 
+		
+		<where>
+		
+			<if test="username!=''">
+				and username like "%"#{username}"%" 
+			</if>
+			
+			<if test="gender!=''">
+				and gender = #{gender}
+			</if>
+				
+			<if test="job!=''">
+				and job = #{job}
+			</if>
+			
+		</where>
+		
+	</select>
+	-->
+	
+	<!-- 按注册时间组合查询 -->
+	<select id="findUserList" parameterType="UserVO" resultType="User">
+	
+		select * from user 
+		
+		<where>
+		
+			<if test="username!=''">
+				and username like "%"#{username}"%" 
+			</if>
+			
+			<if test="gender!=''">
+				and gender = #{gender}
+			</if>
+				
+			<if test="job!=''">
+				and job = #{job}
+			</if>
+			
+		    <if test="regdatetime!='全部时间'">
+				and regdatetime between #{begintime}" 00:00:00" and #{endtime}" 23:59:59"
+			</if>
+			
+		</where>
+		
+	</select>
+	
+	<!-- 单个用户删除 -->
+	<delete id="deleteUser" parameterType="int">
+		delete from user where userid = #{userid}
+	</delete>
+	
+	<!-- 批量用户删除 -->
+	<delete id="deleteUserBatch" parameterType="int[]">
+	
+		delete from user where userid in
+	
+		<foreach collection="array" item="userid" open="(" close=")" separator=",">
+			#{userid}
+		</foreach>
+		
+	</delete>
+	
+	<!-- 查找用户名是否存在 -->
+	<select id="findUsername" parameterType="string" resultType="int">
+		select count(*) from user where username = #{username}
+	</select>
+	
+</mapper>

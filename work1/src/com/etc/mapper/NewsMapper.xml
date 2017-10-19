@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.etc.mapper.NewsMapper">
+
+    <!-- 查询新闻类型列表  -->
+    <select id="findNewsTypeList" resultType="NewsType">
+        select * from newstype
+    </select>
+
+    <!-- 添加新闻  -->
+    <insert id="insertNews" parameterType="News">
+        insert into news values(null, #{title}, #{content}, #{pubtime}, #{newstype.typeid}, #{user.userid}, #{attachment}, #{truename}, #{downloadscore}, #{downloadcount})
+    </insert>
+    <!-- 查询新闻列表
+	<select id="findNewsList" resultMap="newsResultMap">
+		  select news.*, typename, username
+		  from news, newstype as nt, user
+		  where news.typeid = nt.typeid and news.userid = user.userid
+		  order by newsid
+	</select>
+	 -->
+    <select id="findNewsList" resultMap="newsResultMap" parameterType="NewsPage">
+        select news.*, typename, username
+        from news, newstype as nt, user
+        where news.typeid = nt.typeid and news.userid = user.userid
+        order by newsid
+        limit #{offset}, #{pageSize}
+    </select>
+
+    <resultMap type="News" id="newsResultMap">
+
+        <id property="newsid" column="newsid"/>
+
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="pubtime" column="pubtime"/>
+
+        <result property="attachment" column="attachment"/>
+        <result property="truename" column="truename"/>
+        <result property="downloadscore" column="downloadscore"/>
+        <result property="downloadcount" column="downloadcount"/>
+
+        <!-- 多对一关联 -->
+        <association property="newstype" javaType="NewsType">
+            <id property="typeid" column="typeid"/>
+            <result property="typename" column="typename"/>
+        </association>
+
+        <!-- 多对一关联 -->
+        <association property="user" javaType="User">
+            <id property="userid" column="userid"/>
+            <result property="username" column="username"/>
+        </association>
+
+    </resultMap>
+
+    <!-- 更新下载次数  -->
+    <update id="updateDownloadCount" parameterType="int">
+        update news set downloadcount = downloadcount + 1 where newsid = #{newsid}
+    </update>
+
+    <!-- 查询总记录数  -->
+    <select id="findTotalCount" resultType="int">
+        select count(*) from news
+    </select>
+
+</mapper>
