@@ -1,2 +1,2 @@
 # MyFirstSSMProject
-test
+ｓｓｍ框架新功能添加
